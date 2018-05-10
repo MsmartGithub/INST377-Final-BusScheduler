@@ -6,15 +6,10 @@
     <script src="http://malsup.github.com/jquery.form.js"></script> 
 <p id="demo"></p>
 <?php
-
-$url = "http://webservices.nextbus.com/service/publicXMLFeed?command=routeList&a=umd";
-$xml = simplexml_load_file($url);
-$newfile = $xml->asXML("nextbusroutexml.xml");
-
-
+include 'createBusDB.php';
 ?>	
 <script>
-//create xml files for each bus route
+//create xml files for each bus route this populates the Stops and Routes tables
 var xhttp = new XMLHttpRequest();
 xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -24,8 +19,7 @@ xhttp.onreadystatechange = function() {
 xhttp.open("GET", "nextbusroutexml.xml", true);
 xhttp.send();
 
-
-//these functions are used to create the xml files serverside
+//these functions are used in conjuction to create the database tables from xml files downloaded from the web
 function myFunction(attr, xml) {
     var xmlDoc = xml.responseXML;
 	compileRoutes(attr, xmlDoc);
@@ -58,6 +52,18 @@ function generateScheduleXML(array) {
 		$(`#form${i}`).ajaxSubmit({url: 'nextbusapi.php', type: 'post'});
 		
 	}
+	//submit an ajax form for the generation of the Building data from umd.io; This only needs to run once
+		var form = document.createElement("form");
+		form.id = 'BuildingData';
+		form.method = "POST";
+		form.action = "umdioapi.php";
+		var element1 = document.createElement("input");
+			element1.name = "hiddenval";
+			element1.type = "hidden";
+			element1.value = 'NotUsed';
+		form.appendChild(element1);
+		document.body.appendChild(form);
+		$('#BuildingData').ajaxSubmit({url: 'umdioapi.php', type: 'post', timeout: 6000000000});
 }
 </script>
 

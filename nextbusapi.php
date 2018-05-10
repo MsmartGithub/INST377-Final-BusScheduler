@@ -11,20 +11,16 @@ any tree data structure. Since $xml is a SimpleXML object, we can use library fu
 The goal here is to get all the information for each route: Stop Title, StopID, lat, and long.
 */
 	//connect to mysql server
-/*
-	$conn = mysql_connect("localhost", "root", "root");
+
+	$conn = mysql_connect("localhost", "root", "");
 		if (!$conn)
 			{     
 				die('Unable to connect' . mysql_error()); 
 			}	
-*/
+
 //	$xml = simplexml_load_file("132schedule.xml");
 	// Create connection
-	$conn = new mysqli("localhost", "root", "root", "busDB");
-	// Check connection
-	if ($conn->connect_error) {
-		die("Connection failed: " . $conn->connect_error);
-	} 
+
 	class Route {
 		public $routeTag;
 		public $routeName;
@@ -117,21 +113,14 @@ The goal here is to get all the information for each route: Stop Title, StopID, 
 	$s = $sec1;
 	//edit tables
 	foreach ($route->stops as $stop) {
-		/*
+		
 		$db = "busDB";
-		$sql = 	"INSERT INTO busDB.stops(id, tag, title, lat, lon)
-				VALUES({$stop->stopID}, "{$stop->stopTag}", "{$stop->stopTitle}", {$stop->lat}, {$stop->lon});";
-		if (mysql_db_query($db, $sql) != FALSE) {
+		$stopsql = "INSERT INTO Stops(id, tag, title, lat, lon)
+				VALUES({$stop[1]}, '{$stop[2]}', '{$stop[3]}', {$stop[4]}, {$stop[5]})";
+		if (mysql_db_query($db, $stopsql) != FALSE) {
 				echo "Inserted into DB";
 			} else {
 				echo "Insertion Error: " . mysql_error();
-			}*/
-		$stopsql = "INSERT INTO Stops(id, tag, title, lat, lon)
-				VALUES({$stop[1]}, '{$stop[2]}', '{$stop[3]}', {$stop[4]}, {$stop[5]})";
-		if ($conn->query($stopsql) === TRUE) {
-				echo "New record created successfully";
-			} else {
-				echo "Error: " . $stopsql . "<br>" . $conn->error;
 		}
 		
 		//time for this specific stop
@@ -150,18 +139,18 @@ The goal here is to get all the information for each route: Stop Title, StopID, 
 		if ($i === 0) {
 			$routesql = "INSERT INTO Routes(id, stop{$i}, time{$i})
 					VALUES({$route->routeTag}, {$stop[1]}, '{$h}:{$m}:{$s}')";
-			if ($conn->query($routesql) === TRUE) {
-				echo "New record created successfully";
+		if (mysql_db_query($db, $routesql) != FALSE) {
+				echo "Inserted into DB";
 			} else {
-				echo "Error: " . $routesql . "<br>" . $conn->error;
-			}
+				echo "Insertion Error: " . mysql_error();
+		}
 		} else {
 			$routesql = "UPDATE Routes
 				SET stop{$i} = {$stop[1]}, time{$i} = '{$h}:{$m}:{$s}' WHERE id = {$route->routeTag}";
-			if ($conn->query($routesql) === TRUE) {
-				echo "New record created successfully";
+			if (mysql_db_query($db, $routesql) != FALSE) {
+				echo "Updated Routes";
 			} else {
-				echo "Error: " . $routesql . "<br>" . $conn->error;
+				echo "Insertion Error: " . mysql_error();
 			}
 		}
 		$i = $i + 1;
@@ -169,6 +158,6 @@ The goal here is to get all the information for each route: Stop Title, StopID, 
 				$i = 0;
 			}
 	}
-	$conn->close();
+	mysql_close($conn);
 //	mysql_close($conn);
 ?>	

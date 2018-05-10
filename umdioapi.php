@@ -1,14 +1,17 @@
 <?php
+	//need to remove the time limit because this takes about 5 mins to run
+	set_time_limit(0);
 	// Create connection
-	$conn = new mysqli("localhost", "root", "root", "busDB");
-	// Check connection
-	if ($conn->connect_error) {
-		die("Connection failed: " . $conn->connect_error);
-	} 
-
+	$conn = mysql_connect("localhost", "root", "");
+		if (!$conn)
+			{     
+				die('Unable to connect' . mysql_error()); 
+			}	
+	$db = "busDB";
+	//get building data from umd.io api
 	$json = file_get_contents('https://api.umd.io/v0/map/buildings');
 	$obj = json_decode($json);
-	//get all the buildings with building codes
+	//get all this building data into a usable array
 	$bldgarr = array();
 	$i = 0;
 	foreach($obj as $building) {
@@ -17,21 +20,17 @@
 		$i = $i + 1;
 		}
 	}
-	//*Figure out where the nearest stop is for each building and insert data into db 
 	$sql = "SELECT id, lat, lon FROM Stops";
-	$result = $conn->query($sql);
-	
+	//fetch stop data from the database;
+	$result = mysql_db_query($db, $sql);
+	//*Figure out where the nearest stop is for each building and insert data into db 
+	try {
 	foreach ($bldgarr as $bldxy) {
+		//return result resource pointer to the top row
+		mysql_data_seek($result, 0);
 		$curr = 0;
-		echo "Checking {$bldxy[code]}...<br>";
-		print_r($bldxy);
-		echo "<br>";
 		$diff = array(100, 100);
-		foreach ($result as $stopxy) {
-			print_r($stopxy);
-			echo "<br>";
-			print_r($bldxy);
-			echo"<br>";
+		while($stopxy = mysql_fetch_assoc($result)) {
 			if (abs($stopxy[lat] - $bldxy[lat]) <= $diff[0]) {
 				$slon = abs($stopxy[lon]);
 				$blon = abs($bldxy[lng]);
@@ -39,22 +38,25 @@
 					$diff[0] = abs($stopxy[lat] - $bldxy[lat]);
 					$diff[1] = abs($slon - $blon);
 					$curr = $stopxy[id];
-					print_r($curr);
-					echo "<br>";
+					echo "Found new curr <br>";
 				}	
 			}
 		}
-		echo "diddlydoosquigglysqwooo";
+		print_r($curr);
 		$sql = "INSERT INTO Buildings(id, stop)
 				VALUES('{$bldxy[code]}', '{$curr}')";
-		if ($conn->query($sql) === TRUE) {
+		if (mysql_db_query($db, $sql) != FALSE) {
 			echo "New record created successfully";
 		} else {
-			echo "Error: " . $sql . "<br>" . $conn->error;
+			echo mysql_error();
 		}
-		echo "<br>next one<br>";
 	}
 	
-	$conn->close;
+	} catch (Exception $e) {
+		echo 'Caught exception: ', $e->getMessage(), "\n"; 
+	}
+
+	
+	mysql_close($conn);
 	//*/
 ?>
