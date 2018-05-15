@@ -30,7 +30,7 @@ $(document).ready(function(){
 	});
 });
 </script>
-
+<h1>UMD Bus Schedule Builder</h1>s
 <div class="container">
 
     <div id="div_login">
