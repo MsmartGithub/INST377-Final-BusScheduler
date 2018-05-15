@@ -1,4 +1,11 @@
-	#Guide
+#Guide
+This is a Bus Schedule creator application for the University of Maryland.
+We created this application because there is no existing technology for
+a UMD student to quickly and easily create a schedule of buses to use to get around
+campus between classes. Other applications are either too slow, or do not keep a personal
+schedule saved. This application is meant to be used by UMD students.
+
+Below is a description of how the application works.
 
 #Database
  - busDB
