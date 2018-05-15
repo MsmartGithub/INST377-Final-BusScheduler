@@ -2,6 +2,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
+	//Tries to log the user in, must be a valid username/password
     $("#but_submit").click(function(){
         var username = $("#txt_uname").val().trim();
         var password = $("#txt_pwd").val().trim();
@@ -23,15 +24,13 @@ $(document).ready(function(){
             });
         }
     });
+	//takes the user to the registration page
+	$("#but_reg").click(function(){
+		window.location = "createUser.php";
+	});
 });
 </script>
-<head>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
-    <style type="text/css">
-        body{ font: 14px sans-serif; }
-        .wrapper{ width: 350px; padding: 20px; }
-    </style>
-</head>
+
 <div class="container">
 
     <div id="div_login">
@@ -46,9 +45,14 @@ $(document).ready(function(){
         <div>
             <input type="button" value="Submit" name="but_submit" id="but_submit" />
         </div>
-
-    <p>Don't have an account? <a href="createUser.php">Sign up here</a>.</p> 
     </div>
-
+</div>
+<div class="container">
+	<div id="div_signup">
+		<h1>Register</h1>
+		<div>
+			<input type="button" value="Register" name="but_reg" id="but_reg"/>
+		</div>
+	</div>
 </div>
 

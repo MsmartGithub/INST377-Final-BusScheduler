@@ -1,10 +1,5 @@
 <?php
-
-$url = "http://webservices.nextbus.com/service/publicXMLFeed?command=schedule&a=umd&r={$_POST['hiddenval']}";
-$xml = simplexml_load_file($url);
-$newfile = $xml->asXML("{$_POST['hiddenval']}schedule.xml");
-
-
+//creates the tables in busDB
 $conn = mysql_connect("localhost", "root", NULL);
 if (!$conn)
     {     
@@ -30,52 +25,7 @@ if (mysql_db_query($db, $sql) != FALSE) {
     echo "Error creating table: " . mysql_error();
 }
 echo '<br>';
-$sql = "CREATE TABLE Schedules (
-id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-stop0 INT(6),
-time0 TIME,
-stop1 INT(6),
-time1 TIME,
-stop2 INT(6),
-time2 TIME,
-stop3 INT(6),
-time3 TIME,
-stop4 INT(6),
-time4 TIME,
-stop5 INT(6),
-time5 TIME,
-stop6 INT(6),
-time6 TIME,
-stop7 INT(6),
-time7 TIME,
-stop8 INT(6),
-time8 TIME,
-stop9 INT(6),
-time9 TIME,
-stop10 INT(6),
-time10 TIME
-)";
 
-if (mysql_db_query($db, $sql) != FALSE) {
-    echo "Table Schedules created successfully";
-} else {
-    echo "Error creating table: " . mysql_error();
-}
-echo '<br>';
-$sql = "CREATE TABLE Times (
-id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-stopid INT(6),
-routeid INT(6),
-stoptime TIME,
-stopinterval TIME
-)";
-
-if (mysql_db_query($db, $sql) != FALSE) {
-    echo "Table Times created successfully";
-} else {
-    echo "Error creating table: " . mysql_error();
-}
-echo '<br>';
 $sql = "CREATE TABLE Routes (
 id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 name VARCHAR(45),
@@ -104,7 +54,7 @@ time10 TIME
 )";
 
 if (mysql_db_query($db, $sql) != FALSE) {
-    echo "Table Times created successfully";
+    echo "Table Routes created successfully";
 } else {
     echo "Error creating table: " . mysql_error();
 }
@@ -134,4 +84,4 @@ if (mysql_db_query($db, $sql) != FALSE) {
 mysql_close($conn);
 
 
-?>	
+?>
