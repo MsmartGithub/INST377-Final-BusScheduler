@@ -2,8 +2,14 @@
 //Check username and password against the database, 
 //returns 1 and starts a user session if the user/pass exists in the database, returns 0 if it does not
 include "config.php";
-$uname = mysql_real_escape_string($_POST['username']);
-$password = mysql_real_escape_string($_POST['password']);
+// define variables and set to empty values
+$uname = $password = "";
+//validate input
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+$uname = mysql_real_escape_string(test_input($_POST['username']));
+$password = mysql_real_escape_string(test_input($_POST['password']));
+}
+
 if ($uname != "" && $password != ""){
 	$db = "busDB";
     $sql_query = "select count(*) as cntUser from users where username='".$uname."' and password='".$password."'";
@@ -18,5 +24,11 @@ if ($uname != "" && $password != ""){
     }else{
         echo 0;
     }
-
 }
+function test_input($data) {
+	$data = trim($data);
+	$data = stripslashes($data);
+	$data = htmlspecialchars($data);
+	return $data;
+}
+?>
