@@ -15,9 +15,7 @@ if ($uname != "" && $password != ""){
     $sql_query = "select count(*) as cntUser from users where username='".$uname."' and password='".$password."'";
     $result = mysql_db_query($db, $sql_query);
     $row = mysql_fetch_array($result);
-
     $count = $row['cntUser'];
-
     if($count > 0){
         $_SESSION['uname'] = $uname;
         echo 1;
