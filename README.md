@@ -1,4 +1,8 @@
+Matthew Smart
+===
+
 #Guide
+
 This is a Bus Schedule creator application for the University of Maryland.
 We created this application because there is no existing technology for
 a UMD student to quickly and easily create a schedule of buses to use to get around
